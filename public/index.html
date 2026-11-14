@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Recherche de profils pour les conseillers immobiliers SAFTI et iad.">
+  <title>Repères Immo — Recherche de profils</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="identity" href="/">
+        <span class="logo"><svg aria-hidden="true"><use href="/icons.svg#brand"/></svg></span>
+        <span>Repères<span class="brand-accent"> Immo</span><small>Recrutement immobilier</small></span>
+      </a>
+      <div class="top-actions">
+        <span id="header-mode" class="connection-tag"><i></i> Mode démo</span>
+        <button id="open-settings" class="button quiet" type="button"><svg aria-hidden="true"><use href="/icons.svg#settings"/></svg> Connexions</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="hero-copy">
+        <p class="audience">Pour les conseillers SAFTI et iad</p>
+        <h1 id="page-title">Trouvez vos prochains<br><em>talents immobiliers.</em></h1>
+        <p>Recherchez des profils par métier, localisation et disponibilité.</p>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <aside class="filter-card">
+        <form id="search-form">
+          <div class="panel-title">
+            <span class="tile"><svg aria-hidden="true"><use href="/icons.svg#sliders"/></svg></span>
+            <h2>Critères de recherche</h2>
+            <button type="reset" class="text-button" id="reset-search">Effacer</button>
+          </div>
+          <fieldset id="search-fields">
+            <div class="field">
+              <label for="keywords">Mots-clés</label>
+              <input id="keywords" name="keywords" maxlength="200" placeholder="Ex. vente, prospection">
+              <p class="hint">Séparez les expressions par une virgule.</p>
+            </div>
+            <div class="field">
+              <label for="role">Métier</label>
+              <input id="role" name="role" maxlength="100" placeholder="Ex. négociateur immobilier">
+              <button id="suggest" class="text-button suggest" type="button"><svg aria-hidden="true"><use href="/icons.svg#spark"/></svg> Suggérer des métiers proches</button>
+              <p class="hint" id="suggest-status" role="status" hidden></p>
+              <div class="alternatives" id="alternatives"></div>
+            </div>
+
+            <div class="field-group">
+              <h3><svg aria-hidden="true"><use href="/icons.svg#pin"/></svg> Localisation</h3>
+              <div class="row">
+                <div class="field">
+                  <label for="region">Région</label>
+                  <select id="region" name="region"><option value="">Toutes</option></select>
+                </div>
+                <div class="field">
+                  <label for="department">Département</label>
+                  <select id="department" name="department"><option value="">Tous</option></select>
+                </div>
+              </div>
+              <div class="field city-field">
+                <label for="city">Ville</label>
+                <input id="city" name="city" maxlength="100" placeholder="Ex. Bordeaux" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-options">
+                <ul id="city-options" class="city-options" role="listbox" aria-label="Villes" hidden></ul>
+              </div>
+            </div>
+
+            <label class="open-control" for="open-only">
+              <span><strong>Ouvert aux opportunités</strong><small>Profils avec le statut « Open to Work »</small></span>
+              <input id="open-only" name="openOnly" type="checkbox" role="switch">
+            </label>
+
+            <div class="field source-field">
+              <label for="mode">Source</label>
+              <select id="mode" name="mode">
+                <option value="demo">Démo · profils fictifs</option>
+                <option value="linkedin">LinkedIn via Apify</option>
+              </select>
+            </div>
+
+            <button type="submit" class="button primary" id="search-button"><svg aria-hidden="true"><use href="/icons.svg#search"/></svg><span>Lancer la recherche</span><svg class="button-arrow" aria-hidden="true"><use href="/icons.svg#arrow"/></svg></button>
+          </fieldset>
+        </form>
+      </aside>
+
+      <section class="results" aria-labelledby="results-title">
+        <div class="results-header">
+          <div><h2 id="results-title">Résultats</h2><p id="results-subtitle">Profils fictifs de démonstration</p></div>
+          <span class="count" id="count"><svg aria-hidden="true"><use href="/icons.svg#users"/></svg><span></span></span>
+        </div>
+        <p id="result-message" class="message" role="status" hidden></p>
+        <div class="result-list" id="result-list" aria-busy="true"></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="settings" aria-labelledby="settings-title">
+    <form id="settings-form">
+      <div class="dialog-heading">
+        <div><h2 id="settings-title">Connexions API</h2><p>Les clés sont gardées en mémoire jusqu’à l’arrêt du serveur.</p></div>
+        <button type="button" id="close-settings" class="button quiet icon-button" aria-label="Fermer"><svg aria-hidden="true"><use href="/icons.svg#close"/></svg></button>
+      </div>
+      <div class="connection-block">
+        <div class="service-title"><h3>Apify</h3><span class="service-status" id="apify-status"></span></div>
+        <div class="field">
+          <label for="apify-key">Clé API Apify</label>
+          <div class="secret-field">
+            <input type="password" id="apify-key" name="apifyKey" maxlength="300" autocomplete="new-password" spellcheck="false" placeholder="Collez votre clé Apify">
+            <button type="button" class="button quiet icon-button show-key" data-for="apify-key" aria-label="Afficher la clé Apify" aria-pressed="false"><svg aria-hidden="true"><use href="/icons.svg#eye"/></svg></button>
+          </div>
+        </div>
+        <div class="field"><label for="apify-actor">Actor Apify</label><input id="apify-actor" name="apifyActor" maxlength="150" spellcheck="false"></div>
+        <label id="clear-apify-label" class="clear-key" hidden><input name="clearApify" type="checkbox"> Retirer la clé Apify</label>
+      </div>
+      <div class="connection-block">
+        <div class="service-title"><h3>Gemini</h3><span class="service-status" id="gemini-status"></span></div>
+        <div class="field">
+          <label for="gemini-key">Clé API Gemini</label>
+          <div class="secret-field">
+            <input type="password" id="gemini-key" name="geminiKey" maxlength="300" autocomplete="new-password" spellcheck="false" placeholder="Collez votre clé Gemini">
+            <button type="button" class="button quiet icon-button show-key" data-for="gemini-key" aria-label="Afficher la clé Gemini" aria-pressed="false"><svg aria-hidden="true"><use href="/icons.svg#eye"/></svg></button>
+          </div>
+        </div>
+        <div class="field"><label for="gemini-model">Modèle Gemini</label><input id="gemini-model" name="geminiModel" maxlength="100" spellcheck="false"></div>
+        <label id="clear-gemini-label" class="clear-key" hidden><input name="clearGemini" type="checkbox"> Retirer la clé Gemini</label>
+      </div>
+      <p id="settings-message" class="message" role="status" hidden></p>
+      <button class="button primary" id="save-settings" type="submit">Enregistrer les connexions</button>
+    </form>
+  </dialog>
+  <template id="profile-template">
+    <article class="profile">
+      <div class="avatar" aria-hidden="true"></div>
+      <div class="profile-info">
+        <h3></h3><p class="profile-role"></p>
+        <p class="profile-location"><svg aria-hidden="true"><use href="/icons.svg#pin"/></svg><span></span></p>
+        <ul class="skills" aria-label="Compétences"></ul>
+      </div>
+      <div class="profile-actions">
+        <span class="status-pill"><i></i><span></span></span>
+        <a class="profile-link" target="_blank" rel="noopener noreferrer" hidden>Voir sur LinkedIn <svg aria-hidden="true"><use href="/icons.svg#external"/></svg></a>
+      </div>
+    </article>
+  </template>
+</body>
+</html>

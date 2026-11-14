@@ -1,0 +1,23 @@
+REPÈRES IMMO
+
+À quoi sert ce logiciel ?
+
+Repères Immo aide les conseillers SAFTI et iad à trouver des profils
+professionnels par mots-clés, métier, région, département ou ville.
+Un filtre repère les profils qui affichent le statut « Open to Work ».
+
+Que contient le dossier ?
+
+• public/ contient l’écran de recherche et le panneau Connexions.
+• server.mjs et lib/ contiennent le moteur de recherche et les connexions
+  à Apify pour les profils LinkedIn et à Gemini pour les suggestions de métiers.
+• data/ contient le référentiel français des régions, départements et communes.
+• README.md explique le démarrage. PROMPT-CONSTRUCTION.md contient le prompt
+  réutilisable. .env.example sert de modèle pour configurer les clés API.
+
+Comment l’essayer ?
+
+Avec Node.js 22 ou une version plus récente, ouvrez le dossier dans le Terminal,
+lancez npm start, puis ouvrez http://localhost:3000/ dans votre navigateur.
+La démo fonctionne sans clé et affiche 12 profils fictifs. Pour utiliser
+Apify et Gemini, saisissez vos clés dans le panneau Connexions.
